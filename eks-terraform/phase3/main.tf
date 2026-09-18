@@ -6,8 +6,16 @@ terraform {
   required_version = ">= 1.5.0"
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
+      source = "hashicorp/aws"
+      # >= 5.59.0 required: aws_codebuild_webhook's scope_configuration
+      # block (used for org-wide GitHub Actions runners) didn't exist before
+      # that version and older 5.x releases will error on it.
+      version = ">= 5.59.0, < 6.0.0"
+    }
+
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.6"
     }
   }
 }
@@ -47,6 +55,7 @@ module "codebuild" {
   github_repository   = var.github_repository
   github_branch       = var.github_branch
   github_token        = var.github_token
+  webhook_scope       = var.webhook_scope
 
   cluster_name       = local.cluster_name
   vpc_id             = local.vpc_id

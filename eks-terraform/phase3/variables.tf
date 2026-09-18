@@ -47,8 +47,23 @@ variable "github_organization" {
 }
 
 variable "github_repository" {
-  description = "GitHub repository name without the org prefix"
+  description = <<-EOT
+    GitHub repository name without the org prefix. Only used (and required)
+    when webhook_scope = "REPOSITORY". Leave as "" when webhook_scope =
+    "GITHUB_ORGANIZATION".
+  EOT
   type        = string
+  default     = ""
+}
+
+variable "webhook_scope" {
+  description = <<-EOT
+    "REPOSITORY" (default) for a single-repo runner, or "GITHUB_ORGANIZATION"
+    for one project that serves every repo in github_organization. See
+    codebuild/variables.tf for the PAT scope this requires.
+  EOT
+  type        = string
+  default     = "REPOSITORY"
 }
 
 variable "github_branch" {

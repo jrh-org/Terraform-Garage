@@ -41,8 +41,33 @@ variable "github_organization" {
 }
 
 variable "github_repository" {
-  description = "GitHub repository name without the org prefix"
+  description = <<-EOT
+    GitHub repository name without the org prefix. Only used (and required)
+    when webhook_scope = "REPOSITORY". Leave as "" when webhook_scope =
+    "GITHUB_ORGANIZATION", since the runner then serves every repo in the org.
+  EOT
   type        = string
+  default     = ""
+}
+
+variable "webhook_scope" {
+  description = <<-EOT
+    Scope of the CodeBuild runner webhook:
+      "REPOSITORY"          - (default) one project tied to a single repo,
+                               registers a repo-level webhook. Requires
+                               github_repository to be set.
+      "GITHUB_ORGANIZATION" - one project serves every repo in
+                               github_organization, registers an org-level
+                               webhook. Requires a classic PAT with the
+                               admin:org_hook scope, created by an org owner.
+  EOT
+  type        = string
+  default     = "REPOSITORY"
+
+  validation {
+    condition     = contains(["REPOSITORY", "GITHUB_ORGANIZATION"], var.webhook_scope)
+    error_message = "webhook_scope must be either \"REPOSITORY\" or \"GITHUB_ORGANIZATION\"."
+  }
 }
 
 variable "github_branch" {
