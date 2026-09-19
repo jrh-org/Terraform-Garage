@@ -205,7 +205,7 @@ resource "aws_security_group_rule" "kubectl_to_cluster" {
 # --- Launch Template (t3.micro - free tier) ---------------------------------
 data "aws_ssm_parameter" "eks_ami" {
 # name = "/aws/service/eks/optimized-ami/${var.cluster_version}/amazon-linux-2/recommended/image_id"
-  name = "/aws/service/eks/optimized-ami/${var.cluster_version}/amazon-linux-2023/recommended/image_id"
+  name = "/aws/service/eks/optimized-ami/${var.cluster_version}/amazon-linux-2023/x86_64/standard/recommended/image_id"
 }
 
 resource "aws_launch_template" "node" {
