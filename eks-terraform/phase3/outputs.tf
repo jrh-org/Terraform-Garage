@@ -41,3 +41,13 @@ output "runs_on_label" {
   description = "Base label for GitHub Actions runs-on - append github.run_id and github.run_attempt"
   value       = module.codebuild.runs_on_label
 }
+output "ecr_repository_url" {
+  description = "Full ECR repository URL for books-ms-repo"
+  value       = aws_ecr_repository.books_ms_repo.repository_url
+}
+output "pipeline_admin_role_arn" {
+  description = "ARN of the admin-access role the CodeBuild pipeline can assume"
+  value       = aws_iam_role.pipeline_admin.arn
+}
+
+

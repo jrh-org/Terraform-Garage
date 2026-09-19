@@ -41,6 +41,7 @@ locals {
   private_subnet_ids = data.terraform_remote_state.phase1.outputs.private_subnet_ids
   node_role_arn      = data.terraform_remote_state.phase1.outputs.node_role_arn
   aws_account_id     = data.aws_caller_identity.current.account_id
+  cluster_sg_id = data.terraform_remote_state.phase1.outputs.cluster_sg_id
 }
 
 module "codebuild" {
