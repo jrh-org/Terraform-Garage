@@ -1,15 +1,22 @@
 ###############################################################################
-# phase3/eks-access-pipeline-admin.tf
+# phase3/iam-pipeline-admin.tf
 ###############################################################################
-# Grants aws_iam_role.pipeline_admin (phase3/iam-pipeline-admin.tf) access
-# into the EKS cluster via the modern EKS Access Entry API (the cluster is
-# already running authentication_mode = "API_AND_CONFIG_MAP", see
-# phase1/modules/eks/main.tf, so no aws-auth ConfigMap edits are needed).
 
-resource "aws_eks_access_entry" "pipeline_admin" {
-  cluster_name  = local.cluster_name
-  principal_arn = aws_iam_role.pipeline_admin.arn
-  type          = "STANDARD"
+resource "aws_iam_role" "pipeline_admin" {
+  name        = "${var.project_name}-${var.environment}-pipeline-admin-role"
+  description = "Admin-access role assumable by the CodeBuild pipeline role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "AllowCodeBuildRoleAssume"
+        Effect    = "Allow"
+        Principal = { AWS = module.codebuild.codebuild_role_arn }
+        Action    = "sts:AssumeRole"
+      }
+    ]
+  })
 
   tags = {
     Project     = var.project_name
@@ -19,22 +26,7 @@ resource "aws_eks_access_entry" "pipeline_admin" {
   }
 }
 
-# AmazonEKSAdminPolicy, as requested. Note this is distinct from the
-# AmazonEKSClusterAdminPolicy already used for module.codebuild's own role
-# a few lines up: AmazonEKSAdminPolicy maps to Kubernetes' built-in "admin"
-# ClusterRole (full read/write on almost everything in the given scope,
-# including RBAC role/rolebinding management within that scope), while
-# ClusterAdminPolicy maps to "cluster-admin" (true superuser, no
-# restrictions at all). If you actually want full superuser here too,
-# swap the policy_arn below for ".../AmazonEKSClusterAdminPolicy".
-resource "aws_eks_access_policy_association" "pipeline_admin" {
-  cluster_name  = local.cluster_name
-  principal_arn = aws_iam_role.pipeline_admin.arn
-  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSAdminPolicy"
-
-  access_scope {
-    type = "cluster"
-  }
-
-  depends_on = [aws_eks_access_entry.pipeline_admin]
+resource "aws_iam_role_policy_attachment" "pipeline_admin" {
+  role       = aws_iam_role.pipeline_admin.name
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
