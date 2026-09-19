@@ -22,7 +22,7 @@ resource "aws_eks_access_entry" "pipeline_admin" {
 resource "aws_eks_access_policy_association" "pipeline_admin" {
   cluster_name  = local.cluster_name
   principal_arn = aws_iam_role.pipeline_admin.arn
-  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSAdminPolicy"
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
 
   access_scope {
     type = "cluster"
