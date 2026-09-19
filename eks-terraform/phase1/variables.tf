@@ -54,7 +54,7 @@ variable "cluster_version" {
 
 variable "node_instance_type" {
   type    = string
-  default = "t3.micro"
+  default = "t3.medium"
 }
 
 variable "node_desired_size" {
