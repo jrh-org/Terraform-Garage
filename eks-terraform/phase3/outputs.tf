@@ -49,5 +49,8 @@ output "pipeline_admin_role_arn" {
   description = "ARN of the admin-access role the CodeBuild pipeline can assume"
   value       = aws_iam_role.pipeline_admin.arn
 }
-
+output "rds_dns_name" {
+  description = "Fixed internal hostname for the RDS instance - use this in app config"
+  value       = aws_route53_record.postgres.fqdn
+}
 

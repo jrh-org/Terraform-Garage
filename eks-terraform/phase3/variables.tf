@@ -95,3 +95,44 @@ variable "log_retention_days" {
   type        = number
   default     = 30
 }
+
+variable "db_master_password" {
+  description = <<-EOT
+    Master password for the sandbox RDS PostgreSQL instance.
+    Defaults to "postgres" as requested - fine for a throwaway sandbox DB
+    that isn't publicly accessible, but change it (and rotate) before this
+    is anything longer-lived, since it's a well-known/guessable default.
+  EOT
+  type        = string
+  sensitive   = true
+  default     = "postgres"
+}
+
+###############################################################################
+# ADD TO phase3/outputs.tf
+###############################################################################
+
+output "rds_endpoint" {
+  description = "RDS PostgreSQL connection endpoint (host:port)"
+  value       = aws_db_instance.postgres.endpoint
+}
+
+output "rds_address" {
+  description = "RDS PostgreSQL host address (no port) - use this for DNS/host env vars"
+  value       = aws_db_instance.postgres.address
+}
+
+output "rds_port" {
+  description = "RDS PostgreSQL port"
+  value       = aws_db_instance.postgres.port
+}
+
+output "rds_db_name" {
+  description = "Default database name"
+  value       = aws_db_instance.postgres.db_name
+}
+
+output "rds_sg_id" {
+  description = "Security group ID attached to the RDS instance"
+  value       = aws_security_group.postgres.id
+}
