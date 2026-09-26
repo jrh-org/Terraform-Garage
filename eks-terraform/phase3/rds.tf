@@ -68,7 +68,7 @@ resource "aws_security_group_rule" "postgres_from_app_subnets" {
 resource "aws_db_instance" "postgres" {
   identifier     = "${var.project_name}-${var.environment}-postgres"
   engine         = "postgres"
-  engine_version = "16.4"
+  engine_version = "16"
   instance_class = "db.t4g.micro"
 
   allocated_storage     = 20
