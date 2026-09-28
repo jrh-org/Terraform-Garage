@@ -233,6 +233,7 @@ metadata:
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
     alb.ingress.kubernetes.io/certificate-arn: $CERT_ARN
     # alb.ingress.kubernetes.io/ssl-redirect: "443"
+    alb.ingress.kubernetes.io/manage-backend-security-group-rules: "true"
     alb.ingress.kubernetes.io/group.name: myapp-sandbox-alb
     alb.ingress.kubernetes.io/group.order: "100"
     alb.ingress.kubernetes.io/security-groups: $ALB_SG
